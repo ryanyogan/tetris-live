@@ -7,7 +7,7 @@ defmodule Tetris.Tetromino do
 
   @shapes ~w(i t o l j z s a)a
   @doc """
-  Constructor used for testing, and the new_random/0
+  Constructor used for testing, used by the new_random/0
   """
   def new(options \\ []) do
     __struct__(options)
