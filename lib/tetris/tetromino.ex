@@ -4,8 +4,11 @@ defmodule Tetris.Tetromino do
             location: {5, 1}
 
   alias Tetris.Point
+  alias __MODULE__
 
   @shapes ~w(i t o l j z s a)a
+
+  @spec new(list()) :: %Tetromino{}
   @doc """
   Constructor used for testing, used by the new_random/0
   """
@@ -13,6 +16,7 @@ defmodule Tetris.Tetromino do
     __struct__(options)
   end
 
+  @spec new_random :: %Tetromino{shape: atom()}
   @doc """
   Returns a new random Tetromino
   """
@@ -20,6 +24,7 @@ defmodule Tetris.Tetromino do
     new(shape: random_shape())
   end
 
+  @spec right(%{location: {number, number}}) :: %{location: {number, number}}
   @doc """
   Moves the tetro one point right on the X axis
   """
@@ -27,6 +32,7 @@ defmodule Tetris.Tetromino do
     %{tetro | location: Point.right(tetro.location)}
   end
 
+  @spec left(%{location: {number, number}}) :: %{location: {number, number}}
   @doc """
   Moves the tetro one point left on the X axis
   """
@@ -34,6 +40,7 @@ defmodule Tetris.Tetromino do
     %{tetro | location: Point.left(tetro.location)}
   end
 
+  @spec down(%{location: {number, number}}) :: %{location: {number, number}}
   @doc """
   Moves the tetro one point down the Y axis
   """
@@ -41,6 +48,7 @@ defmodule Tetris.Tetromino do
     %{tetro | location: Point.down(tetro.location)}
   end
 
+  @spec rotate(%{rotation: number}) :: %{rotation: number}
   @doc """
   Rotate the tetro based on degrees. This will call rotate_degrees/1 which
   will rotate in increments to the right of 90, 180, 270, and back to 0 (true north).

@@ -4,6 +4,7 @@ defmodule TetrisWeb.GameLive do
   alias Tetris.Tetromino
 
   @impl true
+  @spec mount(any, any, Phoenix.LiveView.Socket.t()) :: {:ok, Phoenix.LiveView.Socket.t()}
   def mount(_params, _session, socket) do
     :timer.send_interval(500, :tick)
 
@@ -15,6 +16,7 @@ defmodule TetrisWeb.GameLive do
   end
 
   @impl true
+  @spec render(Phoenix.LiveView.Socket.t()) :: Phoenix.LiveView.Rendered.t()
   def render(assigns) do
     ~L"""
     <% {x, y} = @tetro.location %>
@@ -28,6 +30,7 @@ defmodule TetrisWeb.GameLive do
     """
   end
 
+  @spec new_tetromino(Phoenix.LiveView.Socket.t()) :: Phoenix.LiveView.Socket.t()
   @doc """
   Assigns a new random tetromino block via the constructor
   to the socket (state)
@@ -36,6 +39,7 @@ defmodule TetrisWeb.GameLive do
     assign(socket, tetro: Tetromino.new_random())
   end
 
+  @spec down(Phoenix.LiveView.Socket.t()) :: Phoenix.LiveView.Socket.t()
   @doc """
   Takes the tetromino and moves it down the Y axis one
   value
@@ -45,6 +49,7 @@ defmodule TetrisWeb.GameLive do
   end
 
   @impl true
+  @spec handle_info(:tick, Phoenix.LiveView.Socket.t()) :: {:noreply, Phoenix.LiveView.Socket.t()}
   def handle_info(:tick, socket) do
     {:noreply, down(socket)}
   end
