@@ -20,13 +20,9 @@ defmodule TetrisWeb.GameLive do
   @spec render(Phoenix.LiveView.Socket.t()) :: Phoenix.LiveView.Rendered.t()
   def render(assigns) do
     ~L"""
-    <% [{x, y}] = @points %>
     <section class="phx-hero">
     <h1>Welcome to Tetris</h1>
     <%= render_board(assigns) %>
-      <pre>
-        {<%= x %>, <%= y %>}
-      </pre>
     </section>
     """
   end
@@ -40,9 +36,11 @@ defmodule TetrisWeb.GameLive do
     """
   end
 
-  defp render_points(%{points: [{x, y}]} = assigns) do
+  defp render_points(assigns) do
     ~L"""
-    <rect width="20" height="20" x="<%= (x - 1) * 20 %>" y="<%= (y - 1) * 20 %>" style="fill:rgb(255,0,0);" />
+    <%= for {x, y} <- @points do %>
+      <rect width="20" height="20" x="<%= (x - 1) * 20 %>" y="<%= (y - 1) * 20 %>" style="fill:rgb(255,0,0);" />
+    <% end %>
     """
   end
 
@@ -54,7 +52,7 @@ defmodule TetrisWeb.GameLive do
   @spec show(Phoenix.LiveView.Socket.t()) :: Phoenix.LiveView.Socket.t()
   defp show(socket) do
     assign(socket,
-      points: Tetromino.points(socket.assigns.tetro)
+      points: Tetromino.show(socket.assigns.tetro)
     )
   end
 

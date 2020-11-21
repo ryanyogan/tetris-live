@@ -35,4 +35,13 @@ defmodule Tetris.Point do
   def down({x, y}) do
     {x, y + 1}
   end
+
+  @spec move({number, number}, {number, number}) :: {number, number}
+  @doc """
+  Move takes the current x and y position, along with the delta (change)
+  and returns a new tuple representing the new points for a block to fill.
+  """
+  def move({x, y}, {change_x, change_y}) do
+    {x + change_x, y + change_y}
+  end
 end

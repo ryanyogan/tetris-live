@@ -1,12 +1,12 @@
 defmodule Tetris.Tetromino do
   defstruct shape: :l,
             rotation: 0,
-            location: {5, 1}
+            location: {3, 0}
 
-  alias Tetris.Point
+  alias Tetris.{Point, Points}
   alias __MODULE__
 
-  @shapes ~w(i t o l j z s a)a
+  @shapes ~w(i t o l j z s)a
 
   @spec new(list()) :: %Tetromino{}
   @doc """
@@ -57,9 +57,73 @@ defmodule Tetris.Tetromino do
     %{tetro | rotation: rotate_degrees(tetro.rotation)}
   end
 
-  @spec points(atom | %{location: number()}) :: [...]
-  def points(tetro) do
-    [tetro.location]
+  def show(tetro) do
+    tetro
+    |> points()
+    |> Points.move(tetro.location)
+  end
+
+  def points(%{shape: :l} = _tetro) do
+    [
+      {2, 1},
+      {2, 2},
+      {2, 3},
+      {3, 3}
+    ]
+  end
+
+  def points(%{shape: :j} = _tetro) do
+    [
+      {3, 1},
+      {3, 2},
+      {2, 3},
+      {3, 3}
+    ]
+  end
+
+  def points(%{shape: :i} = _tetro) do
+    [
+      {2, 1},
+      {2, 2},
+      {2, 3},
+      {2, 4}
+    ]
+  end
+
+  def points(%{shape: :o} = _tetro) do
+    [
+      {2, 2},
+      {3, 2},
+      {2, 3},
+      {3, 3}
+    ]
+  end
+
+  def points(%{shape: :s} = _tetro) do
+    [
+      {2, 2},
+      {3, 2},
+      {1, 3},
+      {2, 3}
+    ]
+  end
+
+  def points(%{shape: :z} = _tetro) do
+    [
+      {1, 2},
+      {2, 2},
+      {2, 3},
+      {3, 3}
+    ]
+  end
+
+  def points(%{shape: :t} = _tetro) do
+    [
+      {1, 2},
+      {2, 2},
+      {3, 2},
+      {2, 3}
+    ]
   end
 
   defp rotate_degrees(270) do
