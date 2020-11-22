@@ -61,8 +61,8 @@ defmodule TetrisWeb.GameLive do
     assign(socket, game: Game.new())
   end
 
-  defp new_tetromino(socket) do
-    assign(socket, game: Game.new_tetromino(socket.assigns.game))
+  defp new_tetromino(%{assigns: %{game: game}} = socket) do
+    assign(socket, game: Game.new_tetromino(game))
   end
 
   def rotate(%{assigns: %{game: game}} = socket) do
