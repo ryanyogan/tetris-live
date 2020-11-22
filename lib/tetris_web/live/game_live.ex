@@ -1,9 +1,9 @@
 defmodule TetrisWeb.GameLive do
   use TetrisWeb, :live_view
 
-  alias Tetris.Tetromino
+  alias Tetris.Game
 
-  @rotate_keys ["ArrowDown", " "]
+  @rotate_keys ["ArrowUp", " "]
 
   @impl true
   @spec mount(any, any, Phoenix.LiveView.Socket.t()) :: {:ok, Phoenix.LiveView.Socket.t()}
@@ -12,12 +12,7 @@ defmodule TetrisWeb.GameLive do
       :timer.send_interval(500, :tick)
     end
 
-    {
-      :ok,
-      socket
-      |> new_tetromino()
-      |> show()
-    }
+    {:ok, new_game(socket)}
   end
 
   @impl true
@@ -44,7 +39,7 @@ defmodule TetrisWeb.GameLive do
 
   defp render_points(assigns) do
     ~L"""
-    <%= for {x, y, shape} <- @points do %>
+    <%= for {x, y, shape} <- @game.points do %>
       <rect
        width="20" height="20"
        x="<%= (x - 1) * 20 %>" y="<%= (y - 1) * 20 %>"
@@ -62,40 +57,36 @@ defmodule TetrisWeb.GameLive do
   defp color(:t), do: "saddlebrown"
   defp color(_shape), do: "red"
 
-  @spec new_tetromino(Phoenix.LiveView.Socket.t()) :: Phoenix.LiveView.Socket.t()
+  def new_game(socket) do
+    assign(socket, game: Game.new())
+  end
+
   defp new_tetromino(socket) do
-    assign(socket, tetro: Tetromino.new_random())
+    assign(socket, game: Game.new_tetromino(socket.assigns.game))
   end
 
-  @spec show(Phoenix.LiveView.Socket.t()) :: Phoenix.LiveView.Socket.t()
-  defp show(socket) do
-    assign(socket,
-      points: Tetromino.show(socket.assigns.tetro)
-    )
-  end
-
-  def rotate(%{assigns: %{tetro: tetro}} = socket) do
+  def rotate(%{assigns: %{game: game}} = socket) do
     assign(
       socket,
-      tetro: Tetromino.rotate(tetro)
+      game: Game.rotate(game)
     )
   end
 
-  def left(%{assigns: %{tetro: tetro}} = socket) do
+  def left(%{assigns: %{game: game}} = socket) do
     assign(
       socket,
-      tetro: Tetromino.left(tetro)
+      game: Game.left(game)
     )
   end
 
-  def right(%{assigns: %{tetro: tetro}} = socket) do
+  def right(%{assigns: %{game: game}} = socket) do
     assign(
       socket,
-      tetro: Tetromino.right(tetro)
+      game: Game.right(game)
     )
   end
 
-  def down(%{assigns: %{tetro: %{location: {_, 20}}}} = socket) do
+  def down(%{assigns: %{game: %{tetro: %{location: {_, 20}}}}} = socket) do
     socket
     |> new_tetromino()
   end
@@ -105,28 +96,28 @@ defmodule TetrisWeb.GameLive do
   Takes the tetromino and moves it down the Y axis one
   value
   """
-  def down(%{assigns: %{tetro: tetro}} = socket) do
-    assign(socket, tetro: Tetromino.down(tetro))
+  def down(%{assigns: %{game: game}} = socket) do
+    assign(socket, game: Game.down(game))
   end
 
   @impl true
   @spec handle_info(:tick, Phoenix.LiveView.Socket.t()) :: {:noreply, Phoenix.LiveView.Socket.t()}
   def handle_info(:tick, socket) do
-    {:noreply, socket |> down() |> show()}
+    {:noreply, socket |> down()}
   end
 
   @impl true
   def handle_event("keystroke", %{"key" => key}, socket) when key in @rotate_keys do
-    {:noreply, socket |> rotate() |> show()}
+    {:noreply, socket |> rotate()}
   end
 
   @impl true
   def handle_event("keystroke", %{"key" => "ArrowRight"}, socket) do
-    {:noreply, socket |> right() |> show()}
+    {:noreply, socket |> right()}
   end
 
   @impl true
   def handle_event("keystroke", %{"key" => "ArrowLeft"}, socket) do
-    {:noreply, socket |> left() |> show()}
+    {:noreply, socket |> left()}
   end
 end
