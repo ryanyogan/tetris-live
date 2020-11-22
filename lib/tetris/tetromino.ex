@@ -6,6 +6,11 @@ defmodule Tetris.Tetromino do
   alias Tetris.{Point, Points}
   alias __MODULE__
 
+  @type t(shape, rotation, location) ::
+          %Tetromino{shape: shape, rotation: rotation, location: location}
+
+  @type t :: %Tetromino{shape: atom(), rotation: number(), location: tuple()}
+
   @shapes ~w(i t o l j z s)a
 
   @spec new(list()) :: %Tetromino{}
@@ -16,7 +21,7 @@ defmodule Tetris.Tetromino do
     __struct__(options)
   end
 
-  @spec new_random :: %Tetromino{shape: atom()}
+  @spec new_random :: Tetromino.t()
   @doc """
   Returns a new random Tetromino
   """
@@ -60,6 +65,7 @@ defmodule Tetris.Tetromino do
   def show(tetro) do
     tetro
     |> points()
+    |> Points.rotate(tetro.rotation)
     |> Points.move(tetro.location)
     |> Points.add_shape(tetro.shape)
   end

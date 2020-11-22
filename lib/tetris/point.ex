@@ -45,6 +45,56 @@ defmodule Tetris.Point do
     {x + change_x, y + change_y}
   end
 
+  @spec transpose(tuple()) :: {number, number}
+  @doc """
+  Transpose takes an x and y point, and returns them reverse in a tuple. This
+  is a basic transpose for a 4x4 grid (all Tetromino's are within 4x4 cells)
+  """
+  def transpose({x, y}) do
+    {y, x}
+  end
+
+  @spec mirror(tuple()) :: {number, number}
+  @doc """
+  Mirror takes an x and y point, and adds 5 to the x value, thus creating a
+  mirror on the x-axis.
+  """
+  def mirror({x, y}) do
+    {5 - x, y}
+  end
+
+  @spec flip({number, number}) :: {number, number}
+  @doc """
+  Flip takes an x and y point, and subtracts y from  5 the y value, thus creating a
+  flip on the x-axis.
+  """
+  def flip({x, y}) do
+    {x, 5 - y}
+  end
+
+  @spec rotate({number(), number()}, 0 | 90 | 180 | 270) :: {number(), number()}
+  @doc """
+  Rotate will take a tuple of points, and call the required transformation functions
+  to move the points to acheive the desired rotation in degrees.
+
+  In the game of tetris you may only rotate in 90 degree segments [0, 90, 180, 270]
+  """
+  def rotate(points, 0) do
+    points
+  end
+
+  def rotate(points, 90) do
+    points |> flip() |> transpose()
+  end
+
+  def rotate(points, 180) do
+    points |> mirror() |> flip()
+  end
+
+  def rotate(points, 270) do
+    points |> mirror() |> transpose()
+  end
+
   @doc """
   Takes a point tuple, with a shape as a paramenter and merges them into
   one single tuple for the UI.

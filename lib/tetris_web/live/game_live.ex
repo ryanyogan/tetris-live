@@ -70,10 +70,16 @@ defmodule TetrisWeb.GameLive do
     )
   end
 
+  def rotate(%{assigns: %{tetro: tetro}} = socket) do
+    assign(
+      socket,
+      tetro: Tetromino.rotate(tetro)
+    )
+  end
+
   def down(%{assigns: %{tetro: %{location: {_, 20}}}} = socket) do
     socket
     |> new_tetromino()
-    |> show()
   end
 
   @spec down(Phoenix.LiveView.Socket.t()) :: Phoenix.LiveView.Socket.t()
@@ -88,6 +94,6 @@ defmodule TetrisWeb.GameLive do
   @impl true
   @spec handle_info(:tick, Phoenix.LiveView.Socket.t()) :: {:noreply, Phoenix.LiveView.Socket.t()}
   def handle_info(:tick, socket) do
-    {:noreply, socket |> down() |> show()}
+    {:noreply, socket |> down() |> rotate() |> show()}
   end
 end
