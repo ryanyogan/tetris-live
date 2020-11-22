@@ -40,11 +40,23 @@ defmodule TetrisWeb.GameLive do
 
   defp render_points(assigns) do
     ~L"""
-    <%= for {x, y} <- @points do %>
-      <rect width="20" height="20" x="<%= (x - 1) * 20 %>" y="<%= (y - 1) * 20 %>" style="fill:rgb(255,0,0);" />
+    <%= for {x, y, shape} <- @points do %>
+      <rect
+       width="20" height="20"
+       x="<%= (x - 1) * 20 %>" y="<%= (y - 1) * 20 %>"
+       style="fill:<%= color(shape) %>;" />
     <% end %>
     """
   end
+
+  defp color(:l), do: "red"
+  defp color(:j), do: "royalblue"
+  defp color(:s), do: "limegreen"
+  defp color(:z), do: "yellow"
+  defp color(:o), do: "magenta"
+  defp color(:i), do: "silver"
+  defp color(:t), do: "saddlebrown"
+  defp color(_shape), do: "red"
 
   @spec new_tetromino(Phoenix.LiveView.Socket.t()) :: Phoenix.LiveView.Socket.t()
   defp new_tetromino(socket) do
