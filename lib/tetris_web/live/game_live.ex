@@ -3,6 +3,8 @@ defmodule TetrisWeb.GameLive do
 
   alias Tetris.Tetromino
 
+  @rotate_keys ["ArrowDown", " "]
+
   @impl true
   @spec mount(any, any, Phoenix.LiveView.Socket.t()) :: {:ok, Phoenix.LiveView.Socket.t()}
   def mount(_params, _session, socket) do
@@ -23,8 +25,10 @@ defmodule TetrisWeb.GameLive do
   def render(assigns) do
     ~L"""
     <section class="phx-hero">
-    <h1>Welcome to Tetris</h1>
-    <%= render_board(assigns) %>
+    <div phx-window-keydown="keystroke">
+      <h1>Welcome to Tetris</h1>
+      <%= render_board(assigns) %>
+    </div>
     </section>
     """
   end
@@ -77,6 +81,20 @@ defmodule TetrisWeb.GameLive do
     )
   end
 
+  def left(%{assigns: %{tetro: tetro}} = socket) do
+    assign(
+      socket,
+      tetro: Tetromino.left(tetro)
+    )
+  end
+
+  def right(%{assigns: %{tetro: tetro}} = socket) do
+    assign(
+      socket,
+      tetro: Tetromino.right(tetro)
+    )
+  end
+
   def down(%{assigns: %{tetro: %{location: {_, 20}}}} = socket) do
     socket
     |> new_tetromino()
@@ -94,6 +112,21 @@ defmodule TetrisWeb.GameLive do
   @impl true
   @spec handle_info(:tick, Phoenix.LiveView.Socket.t()) :: {:noreply, Phoenix.LiveView.Socket.t()}
   def handle_info(:tick, socket) do
-    {:noreply, socket |> down() |> rotate() |> show()}
+    {:noreply, socket |> down() |> show()}
+  end
+
+  @impl true
+  def handle_event("keystroke", %{"key" => key}, socket) when key in @rotate_keys do
+    {:noreply, socket |> rotate() |> show()}
+  end
+
+  @impl true
+  def handle_event("keystroke", %{"key" => "ArrowRight"}, socket) do
+    {:noreply, socket |> right() |> show()}
+  end
+
+  @impl true
+  def handle_event("keystroke", %{"key" => "ArrowLeft"}, socket) do
+    {:noreply, socket |> left() |> show()}
   end
 end
