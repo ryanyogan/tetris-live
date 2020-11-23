@@ -9,7 +9,7 @@ defmodule TetrisWeb.GameLive.Playing do
   @spec mount(any, any, Phoenix.LiveView.Socket.t()) :: {:ok, Phoenix.LiveView.Socket.t()}
   def mount(_params, _session, socket) do
     if connected?(socket) do
-      :timer.send_interval(500, :tick)
+      :timer.send_interval(50, :tick)
     end
 
     {:ok, new_game(socket)}
