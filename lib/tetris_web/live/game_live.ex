@@ -23,6 +23,9 @@ defmodule TetrisWeb.GameLive do
     <div phx-window-keydown="keystroke">
       <h1>Welcome to Tetris</h1>
       <%= render_board(assigns) %>
+      <pre>
+        <%= inspect @game %>
+      </pre>
     </div>
     </section>
     """
@@ -39,7 +42,7 @@ defmodule TetrisWeb.GameLive do
 
   defp render_points(assigns) do
     ~L"""
-    <%= for {x, y, shape} <- @game.points do %>
+    <%= for {x, y, shape} <- @game.points ++ Game.junkyard_points(@game) do %>
       <rect
        width="20" height="20"
        x="<%= (x - 1) * 20 %>" y="<%= (y - 1) * 20 %>"
@@ -59,10 +62,6 @@ defmodule TetrisWeb.GameLive do
 
   def new_game(socket) do
     assign(socket, game: Game.new())
-  end
-
-  defp new_tetromino(%{assigns: %{game: game}} = socket) do
-    assign(socket, game: Game.new_tetromino(game))
   end
 
   def rotate(%{assigns: %{game: game}} = socket) do
@@ -115,4 +114,7 @@ defmodule TetrisWeb.GameLive do
   def handle_event("keystroke", %{"key" => "ArrowLeft"}, socket) do
     {:noreply, socket |> left()}
   end
+
+  @impl true
+  def handle_event("keystroke", _not_captured, socket), do: {:noreply, socket}
 end
