@@ -86,11 +86,6 @@ defmodule TetrisWeb.GameLive do
     )
   end
 
-  def down(%{assigns: %{game: %{tetro: %{location: {_, 20}}}}} = socket) do
-    socket
-    |> new_tetromino()
-  end
-
   @spec down(Phoenix.LiveView.Socket.t()) :: Phoenix.LiveView.Socket.t()
   @doc """
   Takes the tetromino and moves it down the Y axis one
