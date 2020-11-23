@@ -17,7 +17,7 @@ defmodule Tetris.Game do
     |> show()
   end
 
-  defp move_data(%{tetro: tetro}, move_fn) do
+  defp move_data(%{tetro: tetro} = game, move_fn) do
     current_postion = tetro
 
     new_position =
@@ -27,7 +27,7 @@ defmodule Tetris.Game do
     valid_move? =
       new_position
       |> Tetromino.show()
-      |> Points.valid?()
+      |> Points.valid?(game.junkyard)
 
     {current_postion, new_position, valid_move?}
   end
