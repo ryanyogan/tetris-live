@@ -9,7 +9,7 @@ defmodule TetrisWeb.GameLive.Playing do
   @spec mount(any, any, Phoenix.LiveView.Socket.t()) :: {:ok, Phoenix.LiveView.Socket.t()}
   def mount(_params, _session, socket) do
     if connected?(socket) do
-      :timer.send_interval(50, :tick)
+      :timer.send_interval(500, :tick)
     end
 
     {:ok, new_game(socket)}
@@ -80,7 +80,7 @@ defmodule TetrisWeb.GameLive.Playing do
 
   def maybe_end_game(%{assigns: %{game: %{game_over: true}}} = socket) do
     socket
-    |> push_redirect(to: "/game/over")
+    |> push_redirect(to: "/game/over?score=#{socket.assigns.game.score}")
   end
 
   def maybe_end_game(_game_not_over = socket), do: socket
