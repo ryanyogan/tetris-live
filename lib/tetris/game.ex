@@ -88,14 +88,16 @@ defmodule Tetris.Game do
   defp maybe_move_y(y, row) when y < row, do: y + 1
   defp maybe_move_y(y, _row), do: y
 
-  def score_rows(game, rows) do
+  def score_rows(game, rows) when length(rows) > 0 do
     new_score =
       :math.pow(2, length(rows))
       |> round()
       |> Kernel.*(100)
 
-    %{game | score: new_score}
+    %{game | score: game.score + new_score}
   end
+
+  def score_rows(game, _rows), do: game
 
   defp complete_rows(game) do
     game.junkyard
